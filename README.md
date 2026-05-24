@@ -7,8 +7,8 @@ portfolio excess return against the CSI500 benchmark.
 
 ## Course Outcome
 
-- **Stage 1:** full score
-- **Stage 2:** A
+- **Stage 1:** full score based on ranking
+- **Stage 2:** 96/100 based on ranking
 
 The final submissions use different models because the two stages have
 different prediction horizons:
