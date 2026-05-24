@@ -1,0 +1,42 @@
+# macOS
+.DS_Store
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Virtual environments
+.venv/
+.venv312/
+venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+
+# Logs
+*.log
+logs/
+
+# Large files / model files
+*.pkl
+*.joblib
+*.h5
+*.pt
+*.pth
+*.ckpt
+*.onnx
+
+# Data / output folders
+data/
+datasets/
+outputs/
+output/
+checkpoints/
+models/

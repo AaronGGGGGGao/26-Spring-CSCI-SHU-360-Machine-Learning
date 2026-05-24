@@ -1,0 +1,533 @@
+{
+  "selected_config": "narrow_deep",
+  "selected_half_life": 40,
+  "selected_allocation_policy": "static_softmax_2.0",
+  "model_configs": [
+    {
+      "name": "narrow_deep",
+      "hidden_layer_sizes": [
+        64,
+        32
+      ],
+      "alpha": 0.01,
+      "learning_rate_init": 0.001
+    },
+    {
+      "name": "narrow_deep_lighter_reg",
+      "hidden_layer_sizes": [
+        64,
+        32
+      ],
+      "alpha": 0.005,
+      "learning_rate_init": 0.001
+    },
+    {
+      "name": "wider_deep",
+      "hidden_layer_sizes": [
+        96,
+        48
+      ],
+      "alpha": 0.01,
+      "learning_rate_init": 0.0008
+    }
+  ],
+  "half_lives": [
+    10,
+    20,
+    40
+  ],
+  "policies": [
+    "static_softmax_2.0",
+    "trend_dynamic",
+    "breadth_dynamic",
+    "defensive_dynamic"
+  ],
+  "policy_definitions": [
+    {
+      "name": "static_softmax_2.0",
+      "bull": {
+        "top_k": 30,
+        "method": "softmax_2.0"
+      },
+      "neutral": {
+        "top_k": 30,
+        "method": "softmax_2.0"
+      },
+      "stress": {
+        "top_k": 30,
+        "method": "softmax_2.0"
+      }
+    },
+    {
+      "name": "trend_dynamic",
+      "bull": {
+        "top_k": 30,
+        "method": "softmax_2.4"
+      },
+      "neutral": {
+        "top_k": 30,
+        "method": "softmax_1.8"
+      },
+      "stress": {
+        "top_k": 35,
+        "method": "softmax_risk_1.8_0.35"
+      }
+    },
+    {
+      "name": "breadth_dynamic",
+      "bull": {
+        "top_k": 30,
+        "method": "score_sq"
+      },
+      "neutral": {
+        "top_k": 30,
+        "method": "softmax_2.0"
+      },
+      "stress": {
+        "top_k": 35,
+        "method": "softmax_risk_1.5_0.50"
+      }
+    },
+    {
+      "name": "defensive_dynamic",
+      "bull": {
+        "top_k": 30,
+        "method": "softmax_2.0"
+      },
+      "neutral": {
+        "top_k": 35,
+        "method": "softmax_1.5"
+      },
+      "stress": {
+        "top_k": 35,
+        "method": "softmax_risk_2.0_0.35"
+      }
+    }
+  ],
+  "leaderboard": [
+    {
+      "config_name": "narrow_deep",
+      "half_life": 10,
+      "allocation_policy": "static_softmax_2.0",
+      "rank_ic": -0.02926167867123638,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.009314860312854823,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.007580173709519357,
+      "positive_excess_rate": 0.7
+    },
+    {
+      "config_name": "narrow_deep",
+      "half_life": 10,
+      "allocation_policy": "trend_dynamic",
+      "rank_ic": -0.02926167867123638,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.00852163190150446,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.00678694529816899,
+      "positive_excess_rate": 0.7
+    },
+    {
+      "config_name": "narrow_deep",
+      "half_life": 10,
+      "allocation_policy": "breadth_dynamic",
+      "rank_ic": -0.02926167867123638,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.008543237834262682,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.006808551230927215,
+      "positive_excess_rate": 0.7
+    },
+    {
+      "config_name": "narrow_deep",
+      "half_life": 10,
+      "allocation_policy": "defensive_dynamic",
+      "rank_ic": -0.02926167867123638,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.008760924654618574,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.007026238051283109,
+      "positive_excess_rate": 0.7
+    },
+    {
+      "config_name": "narrow_deep",
+      "half_life": 20,
+      "allocation_policy": "static_softmax_2.0",
+      "rank_ic": 0.046778585256068934,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.02441953185228239,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.02268484524894692,
+      "positive_excess_rate": 0.9
+    },
+    {
+      "config_name": "narrow_deep",
+      "half_life": 20,
+      "allocation_policy": "trend_dynamic",
+      "rank_ic": 0.046778585256068934,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.024316088229269818,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.022581401625934357,
+      "positive_excess_rate": 0.9
+    },
+    {
+      "config_name": "narrow_deep",
+      "half_life": 20,
+      "allocation_policy": "breadth_dynamic",
+      "rank_ic": 0.046778585256068934,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.023838010115939355,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.022103323512603888,
+      "positive_excess_rate": 0.9
+    },
+    {
+      "config_name": "narrow_deep",
+      "half_life": 20,
+      "allocation_policy": "defensive_dynamic",
+      "rank_ic": 0.046778585256068934,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.02455583994668875,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.022821153343353284,
+      "positive_excess_rate": 0.9
+    },
+    {
+      "config_name": "narrow_deep",
+      "half_life": 40,
+      "allocation_policy": "static_softmax_2.0",
+      "rank_ic": 0.026802755236248883,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.031728694494077656,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.029994007890742184,
+      "positive_excess_rate": 0.9
+    },
+    {
+      "config_name": "narrow_deep",
+      "half_life": 40,
+      "allocation_policy": "trend_dynamic",
+      "rank_ic": 0.026802755236248883,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.03073087120429736,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.028996184600961893,
+      "positive_excess_rate": 0.9
+    },
+    {
+      "config_name": "narrow_deep",
+      "half_life": 40,
+      "allocation_policy": "breadth_dynamic",
+      "rank_ic": 0.026802755236248883,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.029364494953577562,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.027629808350242098,
+      "positive_excess_rate": 0.9
+    },
+    {
+      "config_name": "narrow_deep",
+      "half_life": 40,
+      "allocation_policy": "defensive_dynamic",
+      "rank_ic": 0.026802755236248883,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.031203247117002363,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.0294685605136669,
+      "positive_excess_rate": 0.9
+    },
+    {
+      "config_name": "narrow_deep_lighter_reg",
+      "half_life": 10,
+      "allocation_policy": "static_softmax_2.0",
+      "rank_ic": 0.017742566783700627,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.008233996900484366,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.0064993102971489,
+      "positive_excess_rate": 0.7
+    },
+    {
+      "config_name": "narrow_deep_lighter_reg",
+      "half_life": 10,
+      "allocation_policy": "trend_dynamic",
+      "rank_ic": 0.017742566783700627,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.00836922900162218,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.006634542398286714,
+      "positive_excess_rate": 0.7
+    },
+    {
+      "config_name": "narrow_deep_lighter_reg",
+      "half_life": 10,
+      "allocation_policy": "breadth_dynamic",
+      "rank_ic": 0.017742566783700627,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.00843707141711265,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.0067023848137771815,
+      "positive_excess_rate": 0.7
+    },
+    {
+      "config_name": "narrow_deep_lighter_reg",
+      "half_life": 10,
+      "allocation_policy": "defensive_dynamic",
+      "rank_ic": 0.017742566783700627,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.008267897986467564,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.006533211383132097,
+      "positive_excess_rate": 0.7
+    },
+    {
+      "config_name": "narrow_deep_lighter_reg",
+      "half_life": 20,
+      "allocation_policy": "static_softmax_2.0",
+      "rank_ic": 0.03669564273557776,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.01667186447937147,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.014937177876036,
+      "positive_excess_rate": 0.8
+    },
+    {
+      "config_name": "narrow_deep_lighter_reg",
+      "half_life": 20,
+      "allocation_policy": "trend_dynamic",
+      "rank_ic": 0.03669564273557776,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.017479814147220753,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.015745127543885285,
+      "positive_excess_rate": 0.8
+    },
+    {
+      "config_name": "narrow_deep_lighter_reg",
+      "half_life": 20,
+      "allocation_policy": "breadth_dynamic",
+      "rank_ic": 0.03669564273557776,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.017635941943589452,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.015901255340253984,
+      "positive_excess_rate": 0.8
+    },
+    {
+      "config_name": "narrow_deep_lighter_reg",
+      "half_life": 20,
+      "allocation_policy": "defensive_dynamic",
+      "rank_ic": 0.03669564273557776,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.017469781442136467,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.015735094838801,
+      "positive_excess_rate": 0.8
+    },
+    {
+      "config_name": "narrow_deep_lighter_reg",
+      "half_life": 40,
+      "allocation_policy": "static_softmax_2.0",
+      "rank_ic": 0.05613007179686569,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.01493142073134704,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.01319673412801157,
+      "positive_excess_rate": 0.8
+    },
+    {
+      "config_name": "narrow_deep_lighter_reg",
+      "half_life": 40,
+      "allocation_policy": "trend_dynamic",
+      "rank_ic": 0.05613007179686569,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.014369074846282599,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.012634388242947128,
+      "positive_excess_rate": 0.7
+    },
+    {
+      "config_name": "narrow_deep_lighter_reg",
+      "half_life": 40,
+      "allocation_policy": "breadth_dynamic",
+      "rank_ic": 0.05613007179686569,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.014148550666773296,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.01241386406343783,
+      "positive_excess_rate": 0.7
+    },
+    {
+      "config_name": "narrow_deep_lighter_reg",
+      "half_life": 40,
+      "allocation_policy": "defensive_dynamic",
+      "rank_ic": 0.05613007179686569,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.014527364490665731,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.012792677887330264,
+      "positive_excess_rate": 0.8
+    },
+    {
+      "config_name": "wider_deep",
+      "half_life": 10,
+      "allocation_policy": "static_softmax_2.0",
+      "rank_ic": 0.013911016628791139,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.0052504105764830476,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.0035157239731475804,
+      "positive_excess_rate": 0.7
+    },
+    {
+      "config_name": "wider_deep",
+      "half_life": 10,
+      "allocation_policy": "trend_dynamic",
+      "rank_ic": 0.013911016628791139,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.004898404105607372,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.0031637175022719054,
+      "positive_excess_rate": 0.6
+    },
+    {
+      "config_name": "wider_deep",
+      "half_life": 10,
+      "allocation_policy": "breadth_dynamic",
+      "rank_ic": 0.013911016628791139,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.00464677243789097,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.0029120858345555037,
+      "positive_excess_rate": 0.6
+    },
+    {
+      "config_name": "wider_deep",
+      "half_life": 10,
+      "allocation_policy": "defensive_dynamic",
+      "rank_ic": 0.013911016628791139,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.005124805255446519,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.0033901186521110523,
+      "positive_excess_rate": 0.7
+    },
+    {
+      "config_name": "wider_deep",
+      "half_life": 20,
+      "allocation_policy": "static_softmax_2.0",
+      "rank_ic": 0.028601046420632603,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.017023119113424502,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.01528843251008904,
+      "positive_excess_rate": 0.8
+    },
+    {
+      "config_name": "wider_deep",
+      "half_life": 20,
+      "allocation_policy": "trend_dynamic",
+      "rank_ic": 0.028601046420632603,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.016969859827790475,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.015235173224455011,
+      "positive_excess_rate": 0.8
+    },
+    {
+      "config_name": "wider_deep",
+      "half_life": 20,
+      "allocation_policy": "breadth_dynamic",
+      "rank_ic": 0.028601046420632603,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.01710857006993454,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.015373883466599075,
+      "positive_excess_rate": 0.8
+    },
+    {
+      "config_name": "wider_deep",
+      "half_life": 20,
+      "allocation_policy": "defensive_dynamic",
+      "rank_ic": 0.028601046420632603,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.01704697484995534,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.015312288246619876,
+      "positive_excess_rate": 0.8
+    },
+    {
+      "config_name": "wider_deep",
+      "half_life": 40,
+      "allocation_policy": "static_softmax_2.0",
+      "rank_ic": 0.044491555748300174,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.014452088263692297,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.012717401660356831,
+      "positive_excess_rate": 0.8
+    },
+    {
+      "config_name": "wider_deep",
+      "half_life": 40,
+      "allocation_policy": "trend_dynamic",
+      "rank_ic": 0.044491555748300174,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.0151567989514764,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.013422112348140933,
+      "positive_excess_rate": 0.8
+    },
+    {
+      "config_name": "wider_deep",
+      "half_life": 40,
+      "allocation_policy": "breadth_dynamic",
+      "rank_ic": 0.044491555748300174,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.01551967667342911,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.013784990070093645,
+      "positive_excess_rate": 0.7
+    },
+    {
+      "config_name": "wider_deep",
+      "half_life": 40,
+      "allocation_policy": "defensive_dynamic",
+      "rank_ic": 0.044491555748300174,
+      "n_dates": 10.0,
+      "mean_portfolio_return": 0.014985998032988218,
+      "mean_benchmark_return": 0.001734686603335467,
+      "mean_excess_return": 0.013251311429652751,
+      "positive_excess_rate": 0.8
+    }
+  ],
+  "split": {
+    "train_end": "2026-03-11",
+    "val_start": "2026-03-19",
+    "val_end": "2026-04-01",
+    "test_start": "2026-04-10",
+    "test_end": "2026-04-23",
+    "train_rows": 81261,
+    "val_rows": 4958,
+    "test_rows": 4908,
+    "forward_horizon": 5,
+    "embargo_days": 5
+  },
+  "validation": {
+    "rank_ic": 0.026802755236248883,
+    "n_dates": 10.0,
+    "mean_portfolio_return": 0.031728694494077656,
+    "mean_benchmark_return": 0.001734686603335467,
+    "mean_excess_return": 0.029994007890742184,
+    "positive_excess_rate": 0.9
+  },
+  "test": {
+    "rank_ic": 0.08827631403441902,
+    "n_dates": 10.0,
+    "mean_portfolio_return": 0.0342050454129271,
+    "mean_benchmark_return": 0.014868604725475697,
+    "mean_excess_return": 0.0193364406874514,
+    "positive_excess_rate": 0.7
+  }
+}

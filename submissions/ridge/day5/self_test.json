@@ -1,0 +1,85 @@
+{
+  "selected_alpha": 0.1,
+  "alphas": [
+    0.01,
+    0.1,
+    1.0,
+    10.0,
+    100.0
+  ],
+  "leaderboard": [
+    {
+      "alpha": 0.01,
+      "rank_ic": -0.08328306993131791,
+      "n_dates": 10.0,
+      "mean_portfolio_return": -0.02473671591947101,
+      "mean_benchmark_return": -0.023711517900330725,
+      "mean_excess_return": -0.0010251980191402837,
+      "positive_excess_rate": 0.5
+    },
+    {
+      "alpha": 0.1,
+      "rank_ic": -0.08328229197759272,
+      "n_dates": 10.0,
+      "mean_portfolio_return": -0.02473671591947101,
+      "mean_benchmark_return": -0.023711517900330725,
+      "mean_excess_return": -0.0010251980191402837,
+      "positive_excess_rate": 0.5
+    },
+    {
+      "alpha": 1.0,
+      "rank_ic": -0.08328510107629043,
+      "n_dates": 10.0,
+      "mean_portfolio_return": -0.024737373383891037,
+      "mean_benchmark_return": -0.023711517900330725,
+      "mean_excess_return": -0.001025855483560311,
+      "positive_excess_rate": 0.5
+    },
+    {
+      "alpha": 10.0,
+      "rank_ic": -0.0833789579741057,
+      "n_dates": 10.0,
+      "mean_portfolio_return": -0.024751387988813024,
+      "mean_benchmark_return": -0.023711517900330725,
+      "mean_excess_return": -0.0010398700884822966,
+      "positive_excess_rate": 0.5
+    },
+    {
+      "alpha": 100.0,
+      "rank_ic": -0.0842586638657959,
+      "n_dates": 10.0,
+      "mean_portfolio_return": -0.0247942372676208,
+      "mean_benchmark_return": -0.023711517900330725,
+      "mean_excess_return": -0.0010827193672900744,
+      "positive_excess_rate": 0.5
+    }
+  ],
+  "split": {
+    "train_end": "2026-03-05",
+    "val_start": "2026-03-13",
+    "val_end": "2026-03-26",
+    "test_start": "2026-04-03",
+    "test_end": "2026-04-17",
+    "train_rows": 109897,
+    "val_rows": 4985,
+    "test_rows": 4985,
+    "forward_horizon": 5,
+    "embargo_days": 5
+  },
+  "validation": {
+    "rank_ic": -0.08328229197759272,
+    "n_dates": 10.0,
+    "mean_portfolio_return": -0.02473671591947101,
+    "mean_benchmark_return": -0.023711517900330725,
+    "mean_excess_return": -0.0010251980191402837,
+    "positive_excess_rate": 0.5
+  },
+  "test": {
+    "rank_ic": 0.1638952753353657,
+    "n_dates": 10.0,
+    "mean_portfolio_return": 0.04597915738017554,
+    "mean_benchmark_return": 0.032696953782122805,
+    "mean_excess_return": 0.013282203598052735,
+    "positive_excess_rate": 0.7
+  }
+}

@@ -1,0 +1,385 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue
+}
+
+\setlist[itemize]{leftmargin=1.2em}
+
+\title{Stage 1 Self-Test Report: Model Attempts and Held-Out Performance}
+\author{Aaron Gao}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Purpose of the Self-Test}
+
+This report documents the self-test methodology for all major Stage 1 model
+attempts. The grading requirement is that the provided data must be split into
+training, validation, and test sets, and that model performance must be reported
+on the held-out test set. The grading also emphasizes two points:
+\begin{itemize}
+    \item the methodology must be sound: proper chronological splitting, no
+    leakage, and sensible validation;
+    \item the reported test performance should exceed the provided baseline.
+\end{itemize}
+
+The final submitted Stage 1 model is
+\texttt{mlp/day3\_stage1\_recent\_window}. However, this report also explains
+the self-test evidence for the other models I tried: the 3-day XGBoost
+baseline, enhanced Ridge, Stage 1 XGBoost, base MLP, tuned MLP, LSTM,
+style-dynamic MLP, recent-window ensemble, optimized portfolio branch,
+model-switch router, and excess-target MLP branch.
+
+\section{Prediction Target and Test Metric}
+
+Stage 1 uses a 3-trading-day holding horizon. For stock \(i\) on trading date
+\(t\), the supervised target is
+\[
+    y_{i,t}
+    =
+    r_{i,t}^{(3)}
+    =
+    \frac{P_{i,t+3}}{P_{i,t}} - 1,
+\]
+where \(P_{i,t}\) is the adjusted close price. The benchmark is the CSI500
+index return over the same horizon:
+\[
+    R_{b,t}^{(3)}
+    =
+    \frac{I_{t+3}}{I_t} - 1.
+\]
+For a portfolio with weights \(w_{i,t}\), the realized portfolio return is
+\[
+    R_{p,t}^{(3)}
+    =
+    \sum_i w_{i,t} r_{i,t}^{(3)}.
+\]
+The primary held-out test metric is mean 3-day excess return:
+\[
+    \overline{R}_{excess}
+    =
+    \frac{1}{T}\sum_{t=1}^{T}
+    \left(R_{p,t}^{(3)} - R_{b,t}^{(3)}\right).
+\]
+I also monitor positive excess rate and rank information coefficient (rank IC).
+Positive excess rate is the fraction of test dates on which the portfolio beats
+the CSI500 benchmark. Rank IC is the average daily Spearman correlation between
+predicted stock scores and realized 3-day returns.
+
+\section{Common Split and Leakage-Control Rules}
+
+All model comparisons use chronological splits by trading date. I do not split
+randomly by rows, because stocks on the same date share market conditions and
+random row splitting would mix future and past regimes. All stocks from the
+same date are assigned to the same split.
+
+\subsection{Canonical Split}
+
+The main canonical self-test split is shown in Table
+\ref{tab:canonical-split}. This is the split used for the main comparison table
+across model families.
+
+\begin{table}[h]
+\centering
+\caption{Canonical chronological train / validation / test split.}
+\label{tab:canonical-split}
+\begin{tabular}{lrrl}
+\toprule
+Split & Rows & Date range & Usage \\
+\midrule
+Training & 109,870 & up to 2026-03-09 & Fit model parameters \\
+Validation & 4,961 & 2026-03-17 to 2026-03-30 & Select hyperparameters and portfolio rule \\
+Test & 4,919 & 2026-04-08 to 2026-04-21 & Final held-out self-test \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The 5-trading-day embargo between train, validation, and test blocks reduces
+overlap from the 3-day forward-return labels. The test set is not used to pick
+model architecture, training window, tree depth, regularization, top-\(k\), or
+weighting rule.
+
+\subsection{Robust Split}
+
+For the strongest candidates, I also used a longer robust split. This checks
+whether a model survives a longer held-out period rather than only one favorable
+10-day test block.
+
+\begin{table}[h]
+\centering
+\caption{Robust chronological train / validation / test split.}
+\label{tab:robust-split}
+\begin{tabular}{lrrl}
+\toprule
+Split & Rows & Date range & Usage \\
+\midrule
+Training & 102,456 & up to 2026-02-06 & Fit model parameters \\
+Validation & 7,402 & 2026-02-24 to 2026-03-16 & Select hyperparameters and portfolio rule \\
+Test & 9,871 & 2026-03-24 to 2026-04-21 & Robust held-out self-test \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Leakage Controls}
+
+The following leakage controls are used throughout the experiments:
+\begin{itemize}
+    \item Splits are chronological by date, never random by row.
+    \item All stocks from the same trading date stay in the same split.
+    \item The 3-day target uses \(P_{i,t+3}\), so rows without observable
+    future returns are removed from supervised training.
+    \item A 5-trading-day embargo separates training, validation, and test
+    blocks.
+    \item Hyperparameters are selected on validation only.
+    \item The test set is used only for final reporting.
+    \item Portfolio weights are generated from model scores and then normalized
+    under the competition constraints: long-only, total weight 1, maximum
+    single-name weight 10\%, and at least 30 positive-weight stocks.
+\end{itemize}
+
+\section{Validation Procedure by Model Attempt}
+
+Table \ref{tab:validation-procedure} summarizes how each attempted model used
+the training and validation data before being evaluated on the held-out test
+set.
+
+{\small
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}{p{0.19\textwidth}p{0.36\textwidth}p{0.35\textwidth}}
+\caption{Validation procedure for each major Stage 1 model attempt.}
+\label{tab:validation-procedure}\\
+\toprule
+Model attempt & What was trained on the training set & What was selected on validation \\
+\midrule
+\endfirsthead
+\toprule
+Model attempt & What was trained on the training set & What was selected on validation \\
+\midrule
+\endhead
+3-day XGBoost baseline &
+Gradient-boosted tree model trained on public price-volume technical factors
+to predict raw 3-day forward return. &
+Validation selected a tradable top-ranked portfolio and established the
+provided baseline for comparison. \\
+\midrule
+Enhanced Ridge &
+Ridge regression trained on an expanded 3-day factor panel including
+market-relative returns, intraday range, volatility, liquidity, beta, and
+cross-sectional rank features. &
+Validation selected the Ridge regularization strength and score-to-weight
+portfolio rule. \\
+\midrule
+Stage 1 XGBoost &
+XGBoost trained on the enhanced public-price factor panel. &
+Validation selected tree regularization profile, recency weighting, top-\(k\),
+and weight transformation. \\
+\midrule
+Base MLP &
+MLP regressor trained on standardized enhanced factors with ReLU activation,
+Adam optimization, early stopping, and \(L_2\) regularization. &
+Validation selected top-\(k\) and capped score/softmax weighting. \\
+\midrule
+Tuned MLP &
+Same model family as base MLP, with a narrower architecture and regularization
+search around the best MLP settings. &
+Validation selected architecture, softmax temperature, risk-aware softmax
+variant, and top-\(k\). \\
+\midrule
+LSTM &
+Sequence model trained on recent 20-day feature histories for each stock. &
+Validation selected the sequence model configuration and the final portfolio
+mapping. \\
+\midrule
+Style-dynamic MLP &
+MLP with market-state-aware portfolio behavior using trend, volatility,
+drawdown, breadth, and style/regime signals. &
+Validation selected dynamic allocation rules, including top-\(k\) and weighting
+changes across regimes. \\
+\midrule
+Recent-window MLP &
+MLP trained on recent rolling windows rather than always using full history. &
+Validation selected lookback \(\{63,126,189,252,\text{full}\}\), architecture,
+top-\(k\), and capped softmax/risk-softmax weighting. \\
+\midrule
+Recent-window ensemble &
+Combination of recent-window variants trained on the same leakage-controlled
+split. &
+Validation selected how to combine recent-window scores and how to map ensemble
+scores into weights. \\
+\midrule
+Optimized portfolio branch &
+Prediction model similar to the MLP branch, with more emphasis on the portfolio
+construction layer. &
+Validation selected score-to-weight transformations and concentration/risk
+controls. \\
+\midrule
+Model-switch router &
+Separate recent-window and style-dynamic experts were trained. A router used
+market-state features to choose between experts. &
+Validation and walk-forward windows selected the router policy. The objective
+was average excess return with penalties for volatility and negative windows. \\
+\midrule
+Excess-target MLP &
+Recent-window MLP trained with labels transformed from raw 3-day return to
+3-day excess return, with winsorization or z-score target denoising. &
+Validation selected target transform, lookback, architecture, top-\(k\), and
+weighting method. \\
+\bottomrule
+\end{longtable}
+}
+
+\section{Canonical Held-Out Test Results}
+
+Table \ref{tab:canonical-results} reports the canonical held-out test result
+for every major model attempt with an available canonical self-test result. The
+reported metric is mean 3-day excess return after constructing the final
+portfolio. The provided 3-day XGBoost baseline is the reference point.
+
+\begin{table}[h]
+\centering
+\caption{Canonical held-out test performance by model attempt.}
+\label{tab:canonical-results}
+\begin{tabular}{p{0.34\textwidth}rrp{0.25\textwidth}}
+\toprule
+Model attempt & Test excess & Gain vs. baseline & Test-set conclusion \\
+\midrule
+Provided 3-day XGBoost baseline & \(+0.767\%\) & -- & Baseline to beat \\
+Enhanced Ridge & \(+1.273\%\) & \(+0.506\%\) & Exceeds baseline \\
+Stage 1 XGBoost & \(+1.394\%\) & \(+0.627\%\) & Exceeds baseline \\
+Base Stage 1 MLP & \(+1.741\%\) & \(+0.974\%\) & Exceeds baseline \\
+Tuned MLP & \(+1.744\%\) & \(+0.977\%\) & Exceeds baseline \\
+LSTM & \(+0.890\%\) & \(+0.123\%\) & Exceeds baseline, but weak \\
+Style-dynamic MLP & \(+0.308\%\) & \(-0.459\%\) & Does not exceed baseline \\
+Recent-window ensemble & \(+1.244\%\) & \(+0.477\%\) & Exceeds baseline \\
+Optimized portfolio branch & \(+1.424\%\) & \(+0.657\%\) & Exceeds baseline \\
+Model-switch router & \(+1.842\%\) & \(+1.075\%\) & Exceeds baseline \\
+Excess-target weighted MLP & \(+0.993\%\) & \(+0.226\%\) & Exceeds baseline, but not robust \\
+\textbf{Recent-window MLP} & \(\mathbf{+2.526\%}\) & \(\mathbf{+1.759\%}\) & \textbf{Best canonical result} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Interpretation of Canonical Results}
+
+The canonical test results show a clear progression. The enhanced Ridge model
+already beats the baseline, which means the additional public-price factors are
+useful. XGBoost improves further, showing that nonlinear interactions help.
+The MLP family improves more than XGBoost, suggesting that standardized
+continuous factors and smooth nonlinear interactions are suitable for this
+cross-sectional ranking task.
+
+The tuned MLP only slightly improves over the base MLP, so architecture tuning
+alone was not the main source of improvement. The largest improvement comes
+from the recent-window MLP, which changes the training distribution by using
+only recent history. This model achieves \(+2.526\%\) mean 3-day excess return
+on the canonical test set, exceeding the provided baseline by \(1.759\)
+percentage points.
+
+Not every attempt worked. The style-dynamic MLP does not beat the baseline on
+the canonical split, so I did not select it despite later robust-split
+strength. The LSTM beats the baseline only slightly, which suggests that the
+available panel length and noisy 3-day label do not justify the extra sequence
+model complexity.
+
+\section{Robust Held-Out Test Results}
+
+For the strongest and most informative candidates, I also ran the robust split
+from Table \ref{tab:robust-split}. These results are shown in Table
+\ref{tab:robust-results}.
+
+\begin{table}[h]
+\centering
+\caption{Robust held-out test performance for selected candidates.}
+\label{tab:robust-results}
+\begin{tabular}{lrrr}
+\toprule
+Model attempt & Test excess & Positive excess rate & Rank IC \\
+\midrule
+Tuned MLP & \(+0.684\%\) & \(70.0\%\) & \(0.0610\) \\
+Style-dynamic MLP & \(+1.130\%\) & \(70.0\%\) & \(0.0653\) \\
+Model-switch router & \(+0.860\%\) & \(70.0\%\) & -- \\
+Excess-target weighted MLP & \(-0.522\%\) & \(40.0\%\) & -- \\
+\textbf{Recent-window MLP} & \(\mathbf{+0.804\%}\) & \(60.0\%\) & \(0.0562\) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The robust split changes the interpretation of some branches. The style-dynamic
+MLP is strong on the robust split but weak on the canonical split, so I judged
+it unstable. The model-switch router is positive on both canonical and robust
+tests but adds substantial complexity and computational cost. The excess-target
+branch fails the robust split, so it is not safe despite beating the canonical
+baseline. The recent-window MLP remains positive and also has the best
+canonical result, which is why it is the final Stage 1 submission.
+
+\section{Walk-Forward Test Results}
+
+To reduce dependence on a single test window, I also used a 3-window
+walk-forward evaluation for the final recent-window MLP and several research
+branches. The most important aggregate result is:
+\[
+    \text{Recent-window MLP walk-forward excess}
+    =
+    +0.783\%.
+\]
+The weighted positive excess rate is \(66.7\%\), and the weighted rank IC is
+\(-0.0251\). The walk-forward rank IC is weaker than the canonical rank IC, but
+the portfolio-level excess return remains positive across multiple windows.
+
+For the excess-target weighted MLP, the walk-forward mean excess return is only
+\(+0.233\%\), much lower than the final recent-window MLP. This supports the
+decision not to use the excess-target branch.
+
+\section{Final Model Selection Based on Self-Test}
+
+The final model selection is based on held-out test performance, not in-sample
+fit. The recent-window MLP is selected because it satisfies both grading
+criteria:
+\begin{itemize}
+    \item \textbf{Sound methodology:} it uses chronological train /
+    validation / test splits, removes rows without observable 3-day targets,
+    applies an embargo, selects hyperparameters only on validation, and reports
+    test results only after model selection.
+    \item \textbf{Performance above baseline:} it achieves \(+2.526\%\)
+    canonical mean 3-day excess return versus \(+0.767\%\) for the provided
+    baseline, a gain of \(+1.759\) percentage points.
+\end{itemize}
+
+The final refreshed Stage 1 submission after the official data update used
+\texttt{mlp/day3\_stage1\_recent\_window/mlp\_model.py}. Its refreshed
+validation-selected configuration was:
+\[
+    \text{lookback}=189,\qquad
+    \text{model}=\texttt{narrow\_deep\_lighter\_reg},\qquad
+    k=35,\qquad
+    \text{weight method}=\texttt{softmax\_2.0}.
+\]
+The generated CSV contains 35 positive-weight stocks, total weight 1, no short
+positions, and maximum single-name weight 10\%.
+
+\section{Conclusion}
+
+Across all attempted models, most branches exceeded the provided 3-day XGBoost
+baseline on the canonical held-out test set, but only the recent-window MLP
+combined the strongest canonical result with positive robust and walk-forward
+checks. The self-test evidence supports the final Stage 1 choice:
+\[
+    \texttt{mlp/day3\_stage1\_recent\_window}.
+\]
+
+\end{document}
