@@ -1,4 +1,4 @@
-# CSI500 Machine Learning Stock Selection
+# CSCI-SHU 360 26 Spring Final Competition - CSI500 Machine Learning Stock Selection
 
 This project is a two-stage machine learning stock-selection system for a
 CSI500 portfolio competition. The goal is to predict short-horizon stock
