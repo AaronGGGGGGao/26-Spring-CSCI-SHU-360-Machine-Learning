@@ -5,7 +5,7 @@ CSI500 portfolio competition. The goal is to predict short-horizon stock
 returns, convert model scores into valid long-only portfolios, and evaluate
 portfolio excess return against the CSI500 benchmark.
 
-## Course Outcome
+## Model Outcome
 
 - **Stage 1:** full score based on ranking
 - **Stage 2:** 96/100 based on ranking
